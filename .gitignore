@@ -1,0 +1,20 @@
+# Результати збірки .NET
+[Bb]in/
+[Oo]bj/
+.vs/
+.idea/
+*.user
+TestResults/
+
+# Локальні секрети (ключі LiqPay sandbox)
+appsettings.Development.json
+**/secrets.json
+*.db
+*.db-shm
+*.db-wal
+
+# Сценарій відеозахисту — особисті нотатки, не для репозиторію
+Сценарій_відеозахисту_*.md
+
+# Робочі файли для звітів
+report/build/
