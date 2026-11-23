@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ЛР2 — RSA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Шифрування несиметричним алгоритмом RSA</h1>
+  <p class="sub">ЛР №2 · Безпека програм та даних · Мамішев Е. І., ПЗПІ-23-6, варіант 13</p>
+  <nav>
+    <button class="tab active" data-tab="keys">1. Генерація ключів</button>
+    <button class="tab" data-tab="crypt">2. Шифрування / розшифрування</button>
+    <button class="tab" data-tab="exchange">3. Обмін з сервером</button>
+  </nav>
+</header>
+
+<main>
+  <!-- 1. Генерація ключів -->
+  <section id="keys" class="panel active">
+    <div class="card">
+      <h2>Генерація ключової пари</h2>
+      <div class="row">
+        <label>Розмір N
+          <select id="keyBits"><option>512</option><option selected>1024</option><option>2048</option></select>
+        </label>
+        <label>Відкрита експонента E
+          <select id="keyE"><option>17</option><option>257</option><option selected>65537</option></select>
+        </label>
+        <label>Формат
+          <select id="keyFormat"><option value="hex">шістнадцятковий</option><option value="dec">десятковий</option></select>
+        </label>
+        <button id="btnGenerate" class="primary">Згенерувати ключі</button>
+      </div>
+      <div id="keyStatus" class="status"></div>
+      <div id="keyOutput" class="kv"></div>
+    </div>
+
+    <div class="card">
+      <h2>Приклад на малих числах (покроково)</h2>
+      <div class="row">
+        <label>P <input id="smP" value="61" size="6"></label>
+        <label>Q <input id="smQ" value="53" size="6"></label>
+        <label>E <input id="smE" value="17" size="6"></label>
+        <label>M <input id="smM" value="65" size="6"></label>
+        <button id="btnSmall" class="primary">Обчислити</button>
+      </div>
+      <pre id="smallOutput" class="mono"></pre>
+    </div>
+  </section>
+
+  <!-- 2. Шифрування / розшифрування -->
+  <section id="crypt" class="panel">
+    <div class="card">
+      <h2>Шифрування відкритим ключем (E, N)</h2>
+      <div id="cryptKeyInfo" class="status"></div>
+      <label class="block">Відкритий текст
+        <textarea id="plainText" rows="3">Привіт! Це лабораторна робота №2 з RSA.</textarea>
+      </label>
+      <button id="btnEncrypt" class="primary">Зашифрувати</button>
+      <div id="encryptTable"></div>
+    </div>
+
+    <div class="card">
+      <h2>Розшифрування закритим ключем (D, N)</h2>
+      <label class="block">Шифротекст: блоки Cᵢ (hex, по одному в рядку)
+        <textarea id="cipherText" rows="5" class="mono"></textarea>
+      </label>
+      <button id="btnDecrypt" class="primary">Розшифрувати</button>
+      <div id="decryptTable"></div>
+      <div id="decryptResult" class="result"></div>
+    </div>
+  </section>
+
+  <!-- 3. Обмін з сервером -->
+  <section id="exchange" class="panel">
+    <div class="card">
+      <h2>Захищений обмін браузер ↔ сервер</h2>
+      <p class="hint">Браузер сам генерує ключі клієнта (rsa.js, BigInt), шифрує повідомлення відкритим ключем
+        сервера, а сервер відповідає, шифруючи відповідь відкритим ключем клієнта. Закриті ключі не передаються.</p>
+      <div class="row">
+        <label>Ключ клієнта
+          <select id="clientBits"><option selected>512</option><option>1024</option></select>
+        </label>
+        <button id="btnClientKeys">а) Сформувати ключі клієнта</button>
+        <button id="btnServerKey">Отримати ключ сервера</button>
+      </div>
+      <label class="block">Повідомлення
+        <textarea id="exMessage" rows="2">Привіт, сервере! Перевірка RSA.</textarea>
+      </label>
+      <div class="row">
+        <button id="btnSend" class="primary">б) Зашифрувати, відправити й отримати відповідь</button>
+        <button id="btnClearLog">Очистити журнал</button>
+      </div>
+      <div id="exReply" class="result"></div>
+    </div>
+    <div class="card">
+      <h2>Журнал кроків</h2>
+      <ol id="exLog" class="log"></ol>
+    </div>
+  </section>
+</main>
+
+<script src="rsa.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
