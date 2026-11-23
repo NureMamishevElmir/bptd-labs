@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DH-чат</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- Екран входу -->
+  <section id="join" class="join">
+    <form id="joinForm" class="card join-card">
+      <h1>Захищений чат</h1>
+      <p class="muted">Обмін ключами Діффі-Хеллмана, шифрування AES-256-GCM</p>
+      <label>Ваше ім'я <input id="name" maxlength="32" required autocomplete="off" placeholder="Наприклад, Борис"></label>
+      <label>Кімната <input id="room" maxlength="32" required value="lab4"></label>
+      <label>Параметри
+        <select id="mode">
+          <option value="big">Надійний режим: RFC 3526, 2048 біт</option>
+          <option value="small">Навчальний режим: Q = 23, A = 5</option>
+        </select>
+      </label>
+      <button type="submit" class="primary">Увійти</button>
+      <p id="joinError" class="error"></p>
+    </form>
+  </section>
+
+  <!-- Головний екран -->
+  <main id="app" class="layout" hidden>
+    <section class="card chat">
+      <header class="chat-head">
+        <div><b id="roomTitle"></b> <span id="who" class="muted"></span></div>
+        <span id="modeBadge" class="badge"></span>
+      </header>
+      <ul id="messages" class="messages"></ul>
+      <form id="sendForm" class="send">
+        <input id="text" autocomplete="off" placeholder="Повідомлення..." maxlength="1000">
+        <button class="primary">Надіслати</button>
+      </form>
+    </section>
+
+    <aside class="card side">
+      <h2>Ключі</h2>
+      <dl class="kv">
+        <dt>Q (просте)</dt><dd id="q"></dd>
+        <dt>A (первісний корінь)</dt><dd id="a"></dd>
+        <dt>Ваш секретний X
+          <button id="eye" class="icon" type="button" title="Показати / сховати">&#128065;</button></dt>
+        <dd id="x" class="secret">••••••</dd>
+        <dt>Ваш відкритий Y = A<sup>X</sup> mod Q</dt><dd id="y"></dd>
+      </dl>
+      <h3>Учасники</h3>
+      <p class="muted small">Відбитки ключа (перші 8 hex SHA-256(K)) у двох вкладках мають збігатися.</p>
+      <ul id="peers" class="peers"></ul>
+    </aside>
+
+    <aside class="card side">
+      <h2>Що бачить сервер</h2>
+      <label class="mitm"><input type="checkbox" id="mitm"> Зловмисний сервер (MITM)</label>
+      <p class="muted small">Сервер лише пересилає Y та шифротексти (base64). Відкритого тексту й ключів K він не має.</p>
+      <p id="mitmNote" class="error small" hidden>Атака: сервер підставляє власні Y, тому відбитки у вкладках
+        більше не збігаються, а сервер розшифровує й перешифровує кожне повідомлення.</p>
+      <ul id="wire" class="wire"></ul>
+    </aside>
+  </main>
+
+  <script src="lib/signalr.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

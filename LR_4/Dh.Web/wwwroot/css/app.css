@@ -1,0 +1,63 @@
+/* Простий світлий інтерфейс */
+:root {
+  --bg: #f3f5f9; --card: #fff; --text: #1d2433; --muted: #6b7385; --line: #e3e7ef;
+  --accent: #3b5bdb; --accent-soft: #e8edff; --danger: #c92a2a; --danger-soft: #fff0f0;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; font: 15px/1.45 "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+h1 { margin: 0 0 4px; font-size: 24px; }
+h2 { margin: 0 0 12px; font-size: 17px; }
+h3 { margin: 16px 0 4px; font-size: 15px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.error { color: var(--danger); min-height: 1em; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+input, select, button { font: inherit; }
+input, select { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; margin-top: 4px; }
+button.primary { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 9px 18px; cursor: pointer; }
+button.primary:hover { filter: brightness(1.1); }
+button.icon { border: 0; background: none; cursor: pointer; font-size: 15px; padding: 0 4px; }
+
+/* Вхід */
+.join { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.join-card { width: min(420px, 100%); display: grid; gap: 12px; }
+.join-card label { display: block; font-weight: 600; font-size: 14px; }
+
+/* Розкладка */
+.layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 14px; height: 100vh; }
+.side { overflow-y: auto; }
+@media (max-width: 1000px) { .layout { grid-template-columns: 1fr; height: auto; } .chat { height: 70vh; } }
+
+/* Чат */
+.chat { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.chat-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.badge { background: var(--accent-soft); color: var(--accent); border-radius: 99px; padding: 2px 10px; font-size: 12px; }
+.messages { list-style: none; margin: 0; padding: 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.msg { max-width: 75%; padding: 7px 12px; border-radius: 12px; background: #eef1f6; align-self: flex-start; }
+.msg.me { align-self: flex-end; background: var(--accent); color: #fff; }
+.msg.bad { background: var(--danger-soft); color: var(--danger); }
+.msg.system { align-self: center; background: none; color: var(--muted); font-size: 13px; padding: 0; }
+.msg .from { font-weight: 600; font-size: 13px; }
+.msg time { display: block; font-size: 11px; opacity: .6; text-align: right; }
+.msg.system time { display: none; }
+.send { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+.send input { margin: 0; }
+
+/* Ключі */
+.kv { margin: 0; }
+.kv dt { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.kv dd { margin: 0; }
+.num { font-family: Consolas, monospace; font-size: 13px; cursor: pointer; word-break: break-all; }
+.peers { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.peer { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.peer-head { display: flex; justify-content: space-between; align-items: center; }
+.fp { font-family: Consolas, monospace; font-weight: 700; padding: 1px 8px; border-radius: 6px; }
+
+/* Сервер */
+.mitm { display: flex; gap: 8px; align-items: center; font-weight: 600; color: var(--danger); }
+.mitm input { width: auto; margin: 0; }
+.wire { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.wire-item { border-left: 3px solid var(--line); padding: 4px 8px; }
+.wire-item.stolen { border-color: var(--danger); background: var(--danger-soft); }
+.wire-item code { display: block; font-size: 11px; color: var(--muted); word-break: break-all; }
