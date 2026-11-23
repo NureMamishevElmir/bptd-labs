@@ -1,0 +1,26 @@
+:root {
+  --bg: #f4f6fb; --card: #fff; --text: #1d2433; --muted: #6b7486;
+  --accent: #2f5bea; --ok: #1a8a4a; --err: #c0392b; --line: #e2e6ef;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+header { background: var(--accent); color: #fff; padding: 20px 24px; }
+header h1 { margin: 0 0 4px; font-size: 24px; }
+header p { margin: 0; opacity: .85; }
+main { max-width: 860px; margin: 24px auto; padding: 0 16px; display: grid; gap: 20px; }
+.card { background: var(--card); border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.card h2 { margin-top: 0; font-size: 19px; }
+form { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; }
+label { display: flex; flex-direction: column; font-size: 14px; color: var(--muted); gap: 4px; }
+input, select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; }
+button, .btn { font: inherit; background: var(--accent); color: #fff; border: 0; border-radius: 6px;
+  padding: 8px 16px; cursor: pointer; text-decoration: none; display: inline-block; }
+button:hover, .btn:hover { filter: brightness(1.1); }
+.out { margin-top: 16px; overflow-x: auto; }
+.hint, .muted { color: var(--muted); font-size: 14px; }
+.big { font-size: 28px; margin: 4px 0; }
+.bits { background: #eef2ff; padding: 2px 8px; border-radius: 4px; letter-spacing: 2px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+.ok { color: var(--ok); font-weight: 600; }
+.err { color: var(--err); font-weight: 600; }

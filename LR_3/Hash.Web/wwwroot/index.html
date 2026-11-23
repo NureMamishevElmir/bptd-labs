@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ЛР-3 · Хеш-функція</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Програмна реалізація хеш-функцій</h1>
+  <p>ЛР-3 · Безпека програм та даних · Мамішев Е. І., ПЗПІ-23-6, варіант 13</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Дайджест файлу</h2>
+    <form id="digestForm">
+      <label>Файл <input type="file" name="file" required></label>
+      <label>Розрядність
+        <select name="bits"><option>2</option><option>4</option><option selected>8</option></select>
+      </label>
+      <button>Обчислити</button>
+    </form>
+    <div id="digestOut" class="out"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Лавинний ефект</h2>
+    <p class="hint">Випадкові повідомлення 1–256 байт, у кожному змінюється один байт.</p>
+    <form id="avaForm">
+      <label>Кількість змін <input type="number" name="trials" value="10000" min="100" max="200000"></label>
+      <button>Запустити експеримент</button>
+    </form>
+    <div id="avaOut" class="out"></div>
+  </section>
+
+  <section class="card">
+    <h2>3. Колізія</h2>
+    <p class="hint">Програма додає nonce у безпечне місце зміненого файлу (docx — XML-коментар,
+      png — чанк tEXt, код — коментар у кінці, інше — байти в кінці), доки дайджести не збіжаться.</p>
+    <form id="colForm">
+      <label>Оригінал <input type="file" name="original" required></label>
+      <label>Змінений файл <input type="file" name="modified" required></label>
+      <label>Розрядність
+        <select name="bits"><option>2</option><option>4</option><option selected>8</option></select>
+      </label>
+      <button>Знайти колізію</button>
+    </form>
+    <div id="colOut" class="out"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
