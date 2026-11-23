@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DES — ЛР1, БПтД</title>
+<style>
+  :root {
+    --bg: #f3f5f9; --card: #fff; --text: #1d2433; --muted: #6b7489; --line: #e3e7ef;
+    --accent: #3157d5; --accent-soft: #e8eefc; --ok: #1e8e4f; --ok-soft: #e3f5ea;
+    --err: #c62f3a; --err-soft: #fde8ea; --warn: #b26a00; --warn-soft: #fff3dd;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+  header { background: linear-gradient(120deg, #23366f, #3157d5); color: #fff; padding: 22px 16px; }
+  header .wrap { max-width: 1180px; margin: 0 auto; }
+  header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  main { max-width: 1180px; margin: 20px auto; padding: 0 16px; display: grid; gap: 18px;
+         grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+          padding: 18px 20px; box-shadow: 0 1px 3px rgba(20,30,60,.05); min-width: 0; }
+  .card.wide { grid-column: 1 / -1; }
+  h2 { margin: 0 0 12px; font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  h2 .num { background: var(--accent-soft); color: var(--accent); border-radius: 8px;
+            width: 26px; height: 26px; display: inline-grid; place-items: center; font-size: 13px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  input, textarea, select { width: 100%; font: inherit; color: inherit; background: #fbfcfe;
+         border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; outline: none; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  textarea { min-height: 84px; resize: vertical; }
+  .mono, input.mono, textarea.mono { font-family: var(--mono); font-size: 14px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+  .row > * { flex: 1 1 160px; min-width: 0; }
+  .row > .shrink { flex: 0 0 auto; }
+  button { font: inherit; border: 0; border-radius: 9px; padding: 9px 16px; cursor: pointer;
+           background: var(--accent); color: #fff; font-weight: 500; white-space: nowrap; }
+  button:hover { filter: brightness(1.08); }
+  button.ghost { background: var(--accent-soft); color: var(--accent); }
+  .actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .seg { display: inline-flex; background: var(--bg); border-radius: 9px; padding: 3px; gap: 2px; }
+  .seg button { background: transparent; color: var(--muted); padding: 5px 12px; font-size: 13px; }
+  .seg button.on { background: #fff; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .label-row { display: flex; justify-content: space-between; align-items: center; gap: 8px;
+               margin: 10px 0 4px; flex-wrap: wrap; }
+  .label-row label { margin: 0; }
+  .out { font-family: var(--mono); font-size: 14px; background: #f7f9fc; border: 1px dashed var(--line);
+         border-radius: 9px; padding: 8px 11px; word-break: break-all; min-height: 38px; white-space: pre-wrap; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 13px; font-weight: 500; }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .badge.err { background: var(--err-soft); color: var(--err); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .alert { border-radius: 10px; padding: 10px 14px; margin-top: 12px; font-size: 14px; display: none; }
+  .alert.show { display: block; }
+  .alert.err { background: var(--err-soft); color: var(--err); border: 1px solid #f5c2c7; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin-top: 10px; font-size: 14px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; font-family: var(--mono); word-break: break-all; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { padding: 5px 9px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; background: #fafbfd; }
+  td.mono { font-family: var(--mono); }
+  td .chg { color: var(--err); font-weight: 600; }
+  .keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px; }
+  .keys div { background: #f7f9fc; border-radius: 8px; padding: 5px 9px; font-family: var(--mono); font-size: 13px; }
+  .keys b { color: var(--muted); font-weight: 500; display: inline-block; width: 34px; }
+  .hint { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .copy { background: transparent; color: var(--accent); padding: 2px 6px; font-size: 12px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 10px 16px 30px; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Алгоритм шифрування DES</h1>
+  <p>ЛР №1 · Безпека програм та даних · Мамішев Е. І., ПЗПІ-23-6, варіант 13</p>
+</div></header>
+
+<main>
+  <!-- 1. Ключ -->
+  <section class="card">
+    <h2><span class="num">1</span>Ключ</h2>
+    <label for="key">Ключ: 8 символів ASCII або 16 шістнадцяткових цифр</label>
+    <input id="key" class="mono" value="Elmir_13" maxlength="16" autocomplete="off" spellcheck="false">
+    <div class="hint">Приклади: <a href="#" data-key="133457799BBCDFF1">133457799BBCDFF1</a> ·
+      слабкий <a href="#" data-key="0000000000000000">0000000000000000</a> ·
+      напівслабкий <a href="#" data-key="01FE01FE01FE01FE">01FE01FE01FE01FE</a></div>
+    <div id="keyStatus" style="margin-top:10px"></div>
+    <div id="keyAlert" class="alert err"></div>
+    <dl class="kv" id="keyKv"></dl>
+    <div class="scroll" style="margin-top:10px"><table id="parity"></table></div>
+  </section>
+
+  <!-- 2. Раундові ключі -->
+  <section class="card">
+    <h2><span class="num">2</span>Раундові ключі k<sub>1</sub>…k<sub>16</sub> (48 бітів)</h2>
+    <div class="keys" id="roundKeys"></div>
+    <div class="hint">Отримані з ключа через PC-1 → циклічні зсуви C<sub>i</sub>, D<sub>i</sub> (1 1 2 2 2 2 2 2 1 2 2 2 2 2 2 1) → PC-2.</div>
+  </section>
+
+  <!-- 3. Шифрування / розшифрування -->
+  <section class="card wide">
+    <h2><span class="num">3</span>Шифрування та розшифрування</h2>
+    <div class="row">
+      <div>
+        <label for="mode">Режим</label>
+        <select id="mode"><option>ECB</option><option>CBC</option></select>
+      </div>
+      <div>
+        <label for="iv">Вектор ініціалізації IV (hex, лише для CBC)</label>
+        <input id="iv" class="mono" maxlength="16" value="0011223344556677" spellcheck="false">
+      </div>
+      <div class="shrink"><button class="ghost" id="ivRandom">Випадковий IV</button></div>
+    </div>
+
+    <div class="row" style="align-items:stretch">
+      <div>
+        <div class="label-row"><label for="plain">Відкритий текст</label>
+          <div class="seg" id="plainFmt"><button data-v="text" class="on">Текст UTF-8</button><button data-v="hex">Hex</button></div>
+        </div>
+        <textarea id="plain">Безпека програм та даних</textarea>
+      </div>
+      <div>
+        <div class="label-row"><label for="cipher">Шифротекст</label>
+          <div class="seg" id="cipherFmt"><button data-v="hex" class="on">Hex</button><button data-v="base64">Base64</button></div>
+        </div>
+        <textarea id="cipher" class="mono" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnEnc">Зашифрувати →</button>
+      <button id="btnDec" class="ghost">← Розшифрувати</button>
+    </div>
+    <div id="cryptAlert" class="alert err"></div>
+
+    <div class="row" style="margin-top:6px">
+      <div><div class="label-row"><label>Шифротекст (hex)</label><button class="copy" data-copy="outHex">копіювати</button></div><div class="out" id="outHex"></div></div>
+      <div><div class="label-row"><label>Шифротекст (Base64)</label><button class="copy" data-copy="outB64">копіювати</button></div><div class="out" id="outB64"></div></div>
+    </div>
+    <div class="row">
+      <div><label>Розшифрований текст</label><div class="out" id="outText"></div></div>
+      <div><label>Розшифровані байти (hex)</label><div class="out" id="outPlainHex"></div></div>
+    </div>
+  </section>
+
+  <!-- 4. Трасування -->
+  <section class="card wide">
+    <h2><span class="num">4</span>Трасування одного блоку (64 біти)</h2>
+    <div class="row">
+      <div><label for="block">Блок відкритого тексту (16 hex-цифр)</label>
+        <input id="block" class="mono" value="0123456789ABCDEF" maxlength="16" spellcheck="false"></div>
+      <div class="shrink"><button id="btnTrace">Трасування</button></div>
+    </div>
+    <div class="hint">Використовується ключ з картки 1. Для контрольного прикладу оберіть ключ 133457799BBCDFF1 — результат 85E813540F0AB405.</div>
+    <div id="traceAlert" class="alert err"></div>
+    <dl class="kv" id="traceHead"></dl>
+    <div class="scroll" style="margin-top:12px"><table id="traceTable"></table></div>
+    <dl class="kv" id="traceTail"></dl>
+  </section>
+</main>
+<footer>Реалізація DES без готових криптографічних функцій · ХНУРЕ, 2026</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = { plain: "text", cipher: "hex" };
+
+// Запит до API; помилку (400) повертаємо як {error}
+async function api(url, body) {
+  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const json = await res.json().catch(() => ({ error: "Помилка сервера" }));
+  if (!res.ok) throw new Error(json.error || "Помилка запиту");
+  return json;
+}
+
+function showAlert(id, msg) { const a = $(id); a.textContent = msg || ""; a.classList.toggle("show", !!msg); }
+function group(hex, n = 4) { return hex.replace(new RegExp(`(.{${n}})(?=.)`, "g"), "$1 "); }
+function kv(el, pairs) { el.innerHTML = pairs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""); }
+
+// Перемикачі формату (текст/hex, hex/base64)
+for (const [segId, name] of [["plainFmt", "plain"], ["cipherFmt", "cipher"]]) {
+  $(segId).addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $(segId).querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    fmt[name] = b.dataset.v;
+    if (name === "plain") $("plain").classList.toggle("mono", fmt.plain === "hex");
+  });
+}
+
+// ---- Ключ: парність, слабкість, раундові ключі ----
+let keyTimer;
+async function refreshKey() {
+  const key = $("key").value;
+  try {
+    const k = await api("/api/key", { key });
+    const badge = k.status === "ok" ? `<span class="badge ok">Ключ надійний</span>`
+      : k.status === "weak" ? `<span class="badge err">Слабкий ключ</span>`
+      : `<span class="badge warn">Напівслабкий ключ</span>`;
+    $("keyStatus").innerHTML = badge + " " + (k.parityOk
+      ? `<span class="badge ok">Парність коректна</span>` : `<span class="badge warn">Біти парності виправлено</span>`);
+    showAlert("keyAlert", k.message);
+    kv($("keyKv"), [
+      ["Формат введення", k.source === "hex" ? "16 hex-цифр" : "8 символів ASCII"],
+      ["Ключ (hex)", group(k.keyHex)],
+      ["З виправленою парністю", group(k.parityFixedHex)]
+    ]);
+    $("parity").innerHTML = "<tr><th>Байт</th><th>Початковий</th><th>Виправлений (непарна к-сть одиниць)</th></tr>" +
+      k.bytes.map((b, i) => `<tr><td>${i + 1}</td><td class="mono">${b.original}</td>
+        <td class="mono">${b.corrected.slice(0, 7)}<span class="${b.changed ? "chg" : ""}">${b.corrected[7]}</span></td></tr>`).join("");
+    $("roundKeys").innerHTML = k.roundKeys.map((rk, i) => `<div><b>k${i + 1}</b>${group(rk)}</div>`).join("");
+  } catch (e) {
+    $("keyStatus").innerHTML = `<span class="badge err">Некоректний ключ</span>`;
+    showAlert("keyAlert", e.message);
+    $("keyKv").innerHTML = $("parity").innerHTML = $("roundKeys").innerHTML = "";
+  }
+}
+$("key").addEventListener("input", () => { clearTimeout(keyTimer); keyTimer = setTimeout(refreshKey, 200); });
+document.querySelectorAll("[data-key]").forEach(a => a.addEventListener("click", e => {
+  e.preventDefault(); $("key").value = a.dataset.key; refreshKey();
+}));
+
+// ---- Шифрування / розшифрування ----
+function cryptBody(data, format) {
+  return { data, format, key: $("key").value, mode: $("mode").value, iv: $("iv").value };
+}
+
+$("btnEnc").addEventListener("click", async () => {
+  showAlert("cryptAlert", "");
+  try {
+    const r = await api("/api/encrypt", cryptBody($("plain").value, fmt.plain));
+    $("outHex").textContent = group(r.hex, 16);
+    $("outB64").textContent = r.base64;
+    $("cipher").value = fmt.cipher === "hex" ? r.hex : r.base64;
+  } catch (e) { showAlert("cryptAlert", e.message); }
+});
+
+$("btnDec").addEventListener("click", async () => {
+  showAlert("cryptAlert", "");
+  try {
+    const r = await api("/api/decrypt", cryptBody($("cipher").value, fmt.cipher));
+    $("outText").textContent = r.text ?? "(байти не є коректним UTF-8 — див. hex)";
+    $("outPlainHex").textContent = group(r.hex, 16);
+  } catch (e) { showAlert("cryptAlert", e.message); }
+});
+
+$("ivRandom").addEventListener("click", () => {
+  const b = crypto.getRandomValues(new Uint8Array(8));
+  $("iv").value = [...b].map(x => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+  $("mode").value = "CBC";
+});
+
+document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
+  navigator.clipboard?.writeText($(b.dataset.copy).textContent.replace(/ /g, ""));
+  b.textContent = "скопійовано"; setTimeout(() => b.textContent = "копіювати", 1200);
+}));
+
+// ---- Трасування ----
+$("btnTrace").addEventListener("click", async () => {
+  showAlert("traceAlert", "");
+  try {
+    const t = await api("/api/trace", { block: $("block").value, key: $("key").value });
+    kv($("traceHead"), [
+      ["Вхідний блок", group(t.input)],
+      ["Після IP", group(t.afterIP)],
+      ["L<sub>0</sub> / R<sub>0</sub>", `${group(t.l0)} / ${group(t.r0)}`]
+    ]);
+    $("traceTable").innerHTML = "<tr><th>Раунд i</th><th>k<sub>i</sub> (48 бітів)</th><th>L<sub>i</sub></th><th>R<sub>i</sub></th></tr>" +
+      t.rounds.map(r => `<tr><td>${r.round}</td><td class="mono">${group(r.key)}</td>
+        <td class="mono">${group(r.l)}</td><td class="mono">${group(r.r)}</td></tr>`).join("");
+    kv($("traceTail"), [
+      ["R<sub>16</sub>L<sub>16</sub>", group(t.preOutput)],
+      ["Результат (після IP<sup>−1</sup>)", `<b>${group(t.output)}</b>`],
+      ["Перевірка: розшифрування", group(t.decrypted)]
+    ]);
+  } catch (e) {
+    showAlert("traceAlert", e.message);
+    $("traceHead").innerHTML = $("traceTable").innerHTML = $("traceTail").innerHTML = "";
+  }
+});
+
+refreshKey();
+</script>
+</body>
+</html>
