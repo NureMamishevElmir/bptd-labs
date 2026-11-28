@@ -153,7 +153,7 @@ class Report:
             self.p("", align=C)
         t = self.doc.add_table(rows=1, cols=2)
         left = ["Виконав:", "ст. гр. ПЗПІ-23-6", "Мамішев Е. І.", "Варіант №13"]
-        right = ["Прийняла:", "ас. каф. ПІ Божко І. К."]
+        right = ["Прийняв:", "ас. каф. ПІ Божко І. К."]
         for cell, lines in ((t.rows[0].cells[0], left), (t.rows[0].cells[1], right)):
             cell.text = ""
             for i, ln in enumerate(lines):
