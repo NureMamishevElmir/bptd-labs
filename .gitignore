@@ -18,3 +18,8 @@ appsettings.Development.json
 
 # Робочі файли для звітів
 report/build/
+
+# Звіти та скрипти їх збирання — лише локально
+Звіт_*.docx
+Звіт_*.pdf
+report/

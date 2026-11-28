@@ -14,5 +14,4 @@
 | `LR_4` | ЛР4. Обмін ключами Діффі-Хеллмана, чат для 3+ користувачів (SignalR, AES-GCM), демонстрація MITM | `dotnet run --project LR_4/Dh.Web` | http://localhost:5104 |
 | `LR_5` | ЛР5. Платіжна форма: система оплати участі в онлайн-конференціях (LiqPay, тестовий режим) | `dotnet run --project LR_5/ConfPay.Web` | http://localhost:5105 |
 
-У кожній папці є власний `README.md`, модульні тести (`dotnet test`) і звіт `Звіт_ЛРn_Мамішев.pdf`.
-Звіти генеруються скриптами з папки `report/` (python-docx, конвертація в PDF через Microsoft Word).
+У кожній папці є власний `README.md` і модульні тести (`dotnet test`).
